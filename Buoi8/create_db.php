@@ -10,12 +10,9 @@
 	<input type="submit" name="cr_db" value="create_db">
 </form>
 <?php
-$servername = "localhost";
-$username = "root";
-$password = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST"){
 	try {
-	  $conn = new PDO("mysql:host=$servername", $username, $password);
+	  $conn = new PDO("mysql:host=sql110.infinityfree.com;dbname=if0_37138560_employee_db", 'if0_37138560if0_37138560', 'nru0orKvQQC');
 	  // set the PDO error mode to exception
 	  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	  $sql = "CREATE DATABASE employee_db";

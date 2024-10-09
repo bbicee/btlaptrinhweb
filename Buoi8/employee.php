@@ -4,7 +4,7 @@ function connect_db()
 {
 	global $conn;
   try {
-	   $conn = new PDO("mysql:host=localhost;dbname=employee_db", 'root', '');
+	   $conn = new PDO("mysql:host=sql110.infinityfree.com;dbname=if0_37138560_employee_db", 'if0_37138560if0_37138560', 'nru0orKvQQC');
 	  // set the PDO error mode to exception
 	  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	  //echo "Kết nối thành công";
@@ -29,7 +29,7 @@ function get_all_employees()
     	//khai báo exception
     	$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
    // Sử dụng Prepare 
-    $stmt = $conn->prepare("SELECT departments.department_id,employeeroles.role_id, employee.employee_id, employee.first_name, employee.last_name, departments.department_name, employeeroles.role_name FROM employee JOIN departments ON employee.department_id = departments.department_id JOIN employeeroles ON employee.role_id = employeeroles.role_id"); 
+    $stmt = $conn->prepare("SELECT departments.department_id,employeeroles.role_id, employees.employee_id, employees.first_name, employees.last_name, departments.department_name, employeeroles.role_name FROM employees JOIN departments ON employees.department_id = departments.department_id JOIN employeeroles ON employees.role_id = employeeroles.role_id"); 
      
     // Thực thi câu truy vấn
     $stmt->execute();
@@ -54,7 +54,7 @@ function get_employees($employee_id)
     // Hàm kết nối
     connect_db();
     // Câu truy vấn lấy tất cả nhân viên
-    $stmt = $conn->prepare("select * from employee where employee_id = {$employee_id}");
+    $stmt = $conn->prepare("select * from employees where employee_id = {$employee_id}");
     // Thực thi câu truy vấn
     $stmt->execute();
     // Khai báo fetch kiểu mảng kết hợp
@@ -84,7 +84,7 @@ function add_employee($employee_firstname, $employee_lastname,$employee_dep, $em
      	//khai báo exception
      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);   
     // Câu truy vấn thêm
-    $sql = " INSERT INTO employee (first_name,last_name,department_id,role_id) VALUES
+    $sql = " INSERT INTO employees (first_name,last_name,department_id,role_id) VALUES
             ('$employee_firstname', '$employee_lastname',$employee_dep,$employee_role)";
      
     // Thực hiện câu truy vấn
@@ -94,36 +94,6 @@ function add_employee($employee_firstname, $employee_lastname,$employee_dep, $em
 catch(PDOException $e) {
   echo $sql . "<br>" . $e->getMessage();
 }
-}
-
-function add_role($role_id, $role_name) {
-  // Gọi tới biến toàn cục $conn
-  global $conn;
-  
-  // Hàm kết nối
-  connect_db();
-  
-  try {
-      // Khai báo exception
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      
-      // Câu truy vấn thêm với prepared statement
-      $sql = "INSERT INTO employeeroles (role_id, role_name) VALUES (:role_id, :role_name)";
-      
-      // Chuẩn bị câu truy vấn
-      $stmt = $conn->prepare($sql);
-      
-      // Gán giá trị cho các tham số
-      $stmt->bindParam(':role_id', $role_id);
-      $stmt->bindParam(':role_name', $role_name);
-      
-      // Thực hiện câu truy vấn
-      $stmt->execute();
-      
-      echo "Thêm dữ liệu thành công";
-  } catch (PDOException $e) {
-      echo $sql . "<br>" . $e->getMessage();
-  }
 }
  
 // Hàm sửa nhân viên
@@ -144,7 +114,7 @@ function edit_employee($employee_id,$employee_firstname, $employee_lastname, $em
      	 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // Câu truy vấn sửa
     $sql = "
-            UPDATE employee SET
+            UPDATE employees SET
             first_name = '$employee_firstname',
             last_name= '$employee_lastname',
             department_id = $employee_dep,
@@ -176,7 +146,7 @@ function delete_employee($employee_id)
     try{
      	 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // Câu SQL xóa
-    $sql = " DELETE FROM employee WHERE employee_id = $employee_id ";
+    $sql = " DELETE FROM employees WHERE employee_id = $employee_id ";
      
     // Prepare statement
   $stmt = $conn->prepare($sql);
@@ -206,63 +176,6 @@ function get_role($role_id)
     $result = $stmt->fetchAll();
      return $result;
     
-}
-// edit role
-function edit_role($role_id, $role_name)
-{
-    // Gọi tới biến toàn cục $conn
-    global $conn;
-     
-    // Hàm kết nối
-    connect_db();
-     
-    try {
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
-        // Câu truy vấn sửa
-        $sql = "
-            UPDATE employeeroles SET
-            role_name = :role_name
-            WHERE role_id = :role_id";
-        
-        // Prepare statement
-        $stmt = $conn->prepare($sql);
-        
-        // Bind parameters
-        $stmt->bindParam(':role_id', $role_id, PDO::PARAM_INT);
-        $stmt->bindParam(':role_name', $role_name, PDO::PARAM_STR);
-        
-        // Execute the query
-        $stmt->execute();
-        
-        // Echo a message to say the UPDATE succeeded
-        echo $stmt->rowCount() . " records UPDATED successfully";
-    } catch(PDOException $e) {
-        echo "Error: " . $e->getMessage();
-    }
-}
-// Delete role
-function delete_role($role_id)
-{
-    // Gọi tới biến toàn cục $conn
-    global $conn;
-     
-    // Hàm kết nối
-    connect_db();
-    try{
-     	 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // Câu SQL xóa
-    $sql = " DELETE FROM employeeroles WHERE role_id = $role_id ";
-     
-    // Prepare statement
-  $stmt = $conn->prepare($sql);
-
-  // execute the query
-  $stmt->execute();
-}
-  catch(PDOException $e) {
-  echo $sql . "<br>" . $e->getMessage();
-}
 }
 //hàm lấy roleid khi biết role name
 function get_roleid($role_name)
@@ -306,31 +219,7 @@ function get_all_role()
     echo "Lỗi: " . $e->getMessage();
 }
 }
-// delete department
-function delete_department($department_id)
-{
-    // Gọi tới biến toàn cục $conn
-    global $conn;
-     
-    // Hàm kết nối
-    connect_db();
-    try{
-     	 $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    // Câu SQL xóa
-    $sql = " DELETE FROM departments WHERE department_id = $department_id ";
-     
-    // Prepare statement
-  $stmt = $conn->prepare($sql);
-
-  // execute the query
-  $stmt->execute();
-}
-  catch(PDOException $e) {
-  echo $sql . "<br>" . $e->getMessage();
-}
-}
 //hàm lấy danh sách department
-
 function get_all_department()
 {
 	 global $conn;
@@ -355,72 +244,6 @@ function get_all_department()
     echo "Lỗi: " . $e->getMessage();
 }
 }
-// add department
-function add_department($department_id, $department_name) {
-  // Gọi tới biến toàn cục $conn
-  global $conn;
-  
-  // Hàm kết nối
-  connect_db();
-  
-  try {
-      // Khai báo exception
-      $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-      
-      // Câu truy vấn thêm với prepared statement
-      $sql = "INSERT INTO departments (department_id, department_name) VALUES (:department_id, :department_name)";
-      
-      // Chuẩn bị câu truy vấn
-      $stmt = $conn->prepare($sql);
-      
-      // Gán giá trị cho các tham số
-      $stmt->bindParam(':department_id', $department_id);
-      $stmt->bindParam(':department_name', $department_name);
-      
-      // Thực hiện câu truy vấn
-      $stmt->execute();
-      
-      echo "Thêm dữ liệu thành công";
-  } catch (PDOException $e) {
-      echo $sql . "<br>" . $e->getMessage();
-  }
-}
-
-// edit_department
-function edit_department($department_id, $department_name)
-{
-    // Gọi tới biến toàn cục $conn
-    global $conn;
-     
-    // Hàm kết nối
-    connect_db();
-     
-    try {
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        
-        // Câu truy vấn sửa
-        $sql = "
-            UPDATE departments SET
-            department_name = :department_name
-            WHERE department_id = :department_id";
-        
-        // Prepare statement
-        $stmt = $conn->prepare($sql);
-        
-        // Bind parameters
-        $stmt->bindParam(':department_id', $department_id, PDO::PARAM_INT);
-        $stmt->bindParam(':department_name', $department_name, PDO::PARAM_STR);
-        
-        // Execute the query
-        $stmt->execute();
-        
-        // Echo a message to say the UPDATE succeeded
-        echo $stmt->rowCount() . " records UPDATED successfully";
-    } catch(PDOException $e) {
-        echo "Error: " . $e->getMessage();
-    }
-}
- 
 
 function get_department($department_id)
 {

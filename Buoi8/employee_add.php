@@ -53,7 +53,7 @@ if (!empty($_POST['add_employee']))
     </head>
     <body>
         <h1>Thêm nhân viên </h1>
-        <a href="employee_list.php">Trở về</a> <br/> <br/>
+        <a href="/Qli_nv/employee_list.php">Trở về</a> <br/> <br/>
         <form method="post" action="employee_add.php">
             <table width="50%" border="1" cellspacing="0" cellpadding="10">
                 <tr>

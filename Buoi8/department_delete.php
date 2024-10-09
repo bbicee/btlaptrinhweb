@@ -1,11 +1,8 @@
-<?php require 'employee.php';
- 
-// Thực hiện xóa
-$id = isset($_POST['id']) ? (int)$_POST['id'] : '';
-if ($id){
+<?php
+require 'department.php';
+
+if (isset($_POST['delete'])) {
+    $id = $_POST['id'];
     delete_department($id);
+    header("Location: department_list.php"); // Chuyển hướng sau khi xóa
 }
- 
-// Trở về trang danh sách
-header("location: department_list.php");
-?>

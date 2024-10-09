@@ -14,6 +14,8 @@ disconnect_db();
     <body>
         <h1>Danh sách nhân viên</h1>
         <a href="employee_add.php">Thêm nhân viên</a> <br/> <br/>
+        <a href="department_list.php">Danh sách phòng ban</a> <br/> <br/>
+        <a href="roles_list.php">Danh sách chức vụ</a> <br/> <br/>
         <table width="100%" border="1" cellspacing="0" cellpadding="10">
             <tr>
                 <td><b>First name</b></td>
